@@ -36,4 +36,10 @@ Player.walk = function (direction) {
   this.xSpeed += direction;
 };
 
+Player.jump = function () {
+  if (offGround < 3 && timeSinceJump > 2) {
+    this.ySpeed = 12;
+    timeSinceJump = 0;
+  }
+};
 
