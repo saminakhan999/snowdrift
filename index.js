@@ -505,4 +505,170 @@ Player.walkedInPlatform = function () {
 };
 
 
+// Rendering the game 
+
+function draw() {
+
+  // Actual game screen 
+  push();
+  scale(width / 800, height / 500);
+  background("#1E90FF");
+  translate(-Player.x - Player.w / 2 + 400, -Player.y - Player.h / 2 + 250); // Positions game screen
+
+  // These are the actual keyboard controls
+  if (keys[UP_ARROW] || keys[87]) {
+    Player.jump();
+  }
+  if (keys[LEFT_ARROW] || keys[65]) {
+    Player.walk(-1.25);
+  }
+  if (keys[RIGHT_ARROW] || keys[68]) {
+    Player.walk(1.25);
+  }
+
+  Player.updateX();
+  Player.walkedInPlatform();
+  Player.updateY();
+
+  offGround++;
+  timeSinceJump++;
+
+  // This makes it possible to walk on the ground without falling
+
+  for (i = 0; i < platforms.length; i++) {
+    if (platforms[i].checkCollision()) {
+      while (platforms[i].checkCollision()) {
+        if (Player.ySpeed > 0) {
+          Player.y += 0.2;
+        } else {
+          offGround = 0;
+          Player.y -= 0.2;
+        }
+      }
+      Player.ySpeed = 0;
+    }
+  }
+
+  // This makes it possible to walk on the ice without falling
+
+  for (i = 0; i < ice.length; i++) {
+    if (ice[i].checkCollision()) {
+      while (ice[i].checkCollision()) {
+        if (Player.ySpeed > 0) {
+          Player.y += 0.2;
+        } else {
+          offGround = 0;
+          Player.y -= 0.2;
+        }
+      }
+      Player.ySpeed = 0;
+      Player.xSpeed = 20; // This makes you slide on ice
+    }
+  }
+
+  // This makes it possible to jump on the trampolines without falling
+
+  for (var i = 0; i < tramps.length; i++) {
+    if (tramps[i].checkCollision()) {
+      Player.ySpeed = 20;
+      Player.y -= Player.ySpeed;
+    }
+  }
+
+  // Render Ground blocks
+  for (i = 0; i < platforms.length; i++) {
+    platforms[i].draw();
+  }
+  // Render Ice blocks
+  for (i = 0; i < ice.length; i++) {
+    ice[i].draw();
+  }
+
+  // Render Trampolines
+  for (i = 0; i < tramps.length; i++) {
+    tramps[i].draw();
+  }
+
+  // Render Spikes with a -50 damage
+  for (i = 0; i < spikes.length; i++) {
+    if (spikes[i].checkCollision()) {
+      Player.health -= 50;
+      Player.ySpeed = 14;
+      Player.y -= 0;
+    }
+    spikes[i].draw();
+  }
+
+  // Render Cannon
+  for (i = 0; i < cannons.length; i++) {
+    cannons[i].update();
+    cannons[i].draw();
+    cannons[i].shoot();
+  }
+
+  // Render moving bullets along with -50 damage 
+
+  for (i = bullets.length - 1; i > -1; i--) {
+    bullets[i].update();
+    bullets[i].draw();
+    if (bullets[i].checkCollision()) {
+      bullets.splice(i, 1);
+      Player.health -= 50;
+      break;
+    }
+    for (var j = 0; j < platforms.length; j++) {
+      if (circlerect(bullets[i], platforms[j])) {
+        bullets.splice(i, 1);
+        break;
+      }
+    }
+    for (var j = 0; j < ice.length; j++) {
+      if (circlerect(bullets[i], ice[j])) {
+        bullets.splice(i, 1);
+        break;
+      }
+    }
+  }
+
+  Player.draw(); // Render Player
+  Portal.draw(); // Render Portal
+
+  // Level and Health display at top
+  pop();
+  fill(0);
+  textSize(width / 23);
+  fill(255, 255, 255);
+  textFont("Quicksand");
+  text("Health: " + round(Player.health), width - width / 8, height / 23);
+  textAlign(CENTER);
+  fill(255, 255, 255);
+  textFont("Quicksand");
+  text("Level " + round(level), width - width / 1.1, height / 23);
+
+  // Die if health goes to 0
+  if (Player.health < 0.1) {
+    die();
+  }
+
+  //checks collision with portal, if there is collision, move player to the next level
+  if (Portal.checkCollision()) {
+    Portal.time += 2;
+    if (Portal.time > 120) {
+      level++;
+      nextLevel();
+    }
+  } else {
+    if (frameCount - framesSinceStart < 60) {
+      Portal.time -= 3;
+    } else {
+      Portal.time--;
+    }
+  }
+  Portal.time = constrain(Portal.time, 0, 180);
+  fill(255, 255, 255, 0 + Portal.time * 2);
+  rect(0, 0, width, height);
+}
+
+
+
 
