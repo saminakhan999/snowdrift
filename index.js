@@ -64,4 +64,12 @@ Player.updateY = function () {
   }
 };
 
+// Creates player 
+Player.draw = function () {
+  noStroke();
+  fill("#00008B");
+  rect(this.x, this.y, this.w, this.h, this.w);
+  fill(0);
+};
+
 
