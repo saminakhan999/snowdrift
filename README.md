@@ -1,4 +1,4 @@
-# Snow Drift
+# Snow Drift - WIP
 
 Enjoy this 2D platform game created using p5.js! :snowflake:
 
