@@ -488,3 +488,21 @@ nextLevel();
 
 
 
+// If player walks into a platform block, it wont glitch at it
+Player.walkedInPlatform = function () {
+  for (var i = 0; i < platforms.length; i++) {
+    slope = 0;
+    while (slope < 20 && platforms[i].checkCollision()) {
+      this.y -= 0.2;
+      slope++;
+    }
+    if (slope === 20) {
+      this.x -= this.xSpeed;
+      this.xSpeed = 0;
+      this.y += slope * 0.2;
+    }
+  }
+};
+
+
+
