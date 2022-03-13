@@ -339,4 +339,13 @@ function Ice(x, y, w, h) {
   };
 }
 
+//current keys that are being held down
+function keyPressed() {
+  keys[keyCode] = true;
+}
+function keyReleased() {
+  keys[keyCode] = false;
+}
+
+
 
