@@ -266,3 +266,28 @@ function rectrect(x1, y1, w1, h1, x2, y2, w2, h2) {
     Math.abs(y1 - y2) <= h1 / 2 + h2 / 2
   );
 }
+
+// Makes it possible for circle and squares to collide 
+function circlerect(circ, rect) {
+  var distX = Math.abs(circ.x - rect.x - rect.w / 2);
+  var distY = Math.abs(circ.y - rect.y - rect.h / 2);
+
+  if (distX > rect.w / 2 + circ.r) {
+    return false;
+  }
+  if (distY > rect.h / 2 + circ.r) {
+    return false;
+  }
+
+  if (distX <= rect.w / 2) {
+    return true;
+  }
+  if (distY <= rect.h / 2) {
+    return true;
+  }
+
+  var dx = distX - rect.w / 2;
+  var dy = distY - rect.h / 2;
+  return dx * dx + dy * dy <= circ.r * circ.r;
+}
+
