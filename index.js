@@ -384,4 +384,40 @@ function reset() {
   spikes = [];
 }
 
+/*
+G = Ground Platform
+P = Portal
+S = Player Start Position
+C = Cannon
+^ = Spike
+T = Trampoline (Tramp)
+I = Ice 
+*/
+
+// Each array is a level 
+
+var levelData = [
+  // Level 1
+  [
+    "                                     GG    T       T ",
+    "                                     GG        C              P",
+    "                                   GGGG        G         GGGGGG",
+    "                                   GGGG                  GGGGGG",
+    "                                 GGGGGG   C  C           GGGGGG",
+    "                                 GGGGGG   G  G     T     GGGGGG",
+    "  S                   ^      T   GGGGGG^^^^^^^^^^^  ^^^^^GGGGGG",
+    "GGGGGGGGGGIIIIIIIIIIIIIIIGGGGGGGGGGGGGGIIIIIIIIIIIGGIIIIIGGGGGG",
+    30,
+  ],
+  // Level 2
+  [
+    "  S                  ^         ^             ^    ^^        ^^       ^    P ",
+    "GGGGGIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIGGGGGGG",
+    30,
+  ],
+  // Level 3
+  ["  S     P", "GGGGGGGGGGG", 30],
+];
+
+
 
