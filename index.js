@@ -43,3 +43,25 @@ Player.jump = function () {
   }
 };
 
+//Updates the position of the player based on speed
+Player.updateX = function () {
+  this.xSpeed *= 0.8;
+  this.x += this.xSpeed;
+};
+Player.updateY = function () {
+  if (this.ySpeed < 4 || keys[UP_ARROW] || keys[87]) {
+    this.ySpeed -= gravity;
+  } else {
+    this.ySpeed -= gravity * 2;
+  }
+  this.y -= this.ySpeed;
+  if ( // need this one because you fall forever without it
+    this.y >
+    levelData[level - 1].length *
+      levelData[level - 1][levelData[level - 1].length - 1]
+  ) {
+    die();
+  }
+};
+
+
