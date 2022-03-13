@@ -23,7 +23,7 @@ var Player = {
   h: 30,
   ySpeed: 0,
   xSpeed: 0,
-  health: 150,
+  health: 200,
 };
 var Portal = {
   x: 0,
@@ -373,7 +373,7 @@ function win() {
 
 
 function die() {
-  Player.health = 150;
+  Player.health = 200;
   Portal.time = 0;
   Player.x = originalCoords[0];
   Player.y = originalCoords[1];
@@ -432,7 +432,7 @@ function nextLevel() {
   if (level > levelData.length) {
     win();
   }
-  Player.health = 150;
+  Player.health = 200;
   reset();
   
   var gridSize = levelData[level - 1][levelData[level - 1].length - 1];
