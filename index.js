@@ -32,3 +32,8 @@ var Portal = {
   time: 0,
 };
 
+Player.walk = function (direction) {
+  this.xSpeed += direction;
+};
+
+
