@@ -204,3 +204,51 @@ Portal.checkCollision = function () {
   return circlerect(this, Player);
 };
 
+
+// This function makes it possible for all shapes to collide 
+
+function polygonCollide(shape1, shape2) {
+  function isBetween(c, a, b) {
+    return (a - c) * (b - c) <= 0;
+  }
+  function overlap(a, b) {
+    return isBetween(b.min, a.min, a.max) || isBetween(a.min, b.min, b.max);
+  }
+
+  function project(shape, axis) {
+    var mn = Infinity;
+    var mx = -Infinity;
+    for (var i = 0; i < shape.length; i++) {
+      var dot = shape[i].x * axis.x + shape[i].y * axis.y;
+      mx = max(mx, dot);
+      mn = min(mn, dot);
+    }
+    return { min: mn, max: mx };
+  }
+
+  function getAxes(shape) {
+    var axes = [];
+    for (var i = 0; i < shape.length; i++) {
+      var n = (i + 1) % shape.length;
+      axes[i] = {
+        y: shape[i].x - shape[n].x,
+        x: -(shape[i].y - shape[n].y),
+      };
+    }
+    return axes;
+  }
+
+  var shapes = [shape1, shape2];
+  for (var s = 0; s < shapes.length; s++) {
+    var axes = getAxes(shapes[s]);
+    for (var i = 0; i < axes.length; i++) {
+      var axis = axes[i];
+      var p1 = project(shape1, axis);
+      var p2 = project(shape2, axis);
+      if (!overlap(p1, p2)) {
+        return false;
+      }
+    }
+  }
+  return true; 
+} 
