@@ -101,6 +101,14 @@ h1 {
   text-shadow: -1px -1px 0 black, -2px -2px 0 black, -3px -3px 0 black, -4px -4px 0 black, -5px -5px 0 black, -6px -6px 0 black, -7px -7px 0 black;
 }
 
+h2 {
+  font-weight: bolder;
+  color: #5353dd;
+  text-align: center;
+  position: fixed;
+  bottom: 100px;
+}
+
 html,
 body {
   height: 100%;

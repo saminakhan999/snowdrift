@@ -2,6 +2,8 @@
 
 Enjoy this 2D platform game created using p5.js! :snowflake:
 
+*** More levels coming soon ***
+
 ## Installation & Usage
 
 ### Installation
