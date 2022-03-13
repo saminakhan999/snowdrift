@@ -348,4 +348,21 @@ function keyReleased() {
 }
 
 
+function win() {
+  background("#1E90FF");
+  textSize(width / 20);
+  fill("#F5F5F5");
+  textFont("Bebas Neue");
+  text(
+    "OMG YOU BEAT ALL THE LEVELS!!!! \n [ INSERT THAT CRAZY SNOW DRIFT FINAL LEVEL \n PLOT TWIST THAT YOU TOLD ME ABOUT ]",
+    width / 2,
+    height / 2
+  );
+  const button = createButton("Play Again");
+  button.position(500, 500, "fixed");
+  button.mousePressed(() => window.location.reload());
+  noLoop();
+  return;
+}
+
 
