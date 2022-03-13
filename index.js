@@ -125,3 +125,28 @@ function Bullet(x, y, r, angle) {
     return circlerect(this, Player);
   };
 }
+
+
+// Creates Trampoline 
+function Tramp(x, y, w, h) {
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.h = h;
+  this.draw = function () {
+    fill(0,0,1);
+    rect(this.x, this.y, this.w, this.h);
+  };
+  this.checkCollision = function () {
+    return rectrect(
+      this.x,
+      this.y,
+      this.w,
+      this.h,
+      Player.x,
+      Player.y,
+      Player.w,
+      Player.h
+    );
+  };
+}
