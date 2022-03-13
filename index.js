@@ -366,3 +366,12 @@ function win() {
 }
 
 
+function die() {
+  Player.health = 150;
+  Portal.time = 0;
+  Player.x = originalCoords[0];
+  Player.y = originalCoords[1];
+}
+
+
+
