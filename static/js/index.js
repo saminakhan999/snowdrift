@@ -354,12 +354,18 @@ function win() {
   fill("#F5F5F5");
   textFont("Bebas Neue");
   text(
-    "OMG YOU BEAT ALL THE LEVELS!!!! \n [ INSERT THAT CRAZY SNOW DRIFT FINAL LEVEL \n PLOT TWIST THAT YOU TOLD ME ABOUT ]",
+    "OMG YOU BEAT ALL THE LEVELS!!!! \n [ INSERT CRAZY SNOW DRIFT FINAL LEVEL \n PLOT TWIST ]",
     width / 2,
     height / 2
   );
   const button = createButton("Play Again");
   button.position(500, 500, "fixed");
+  button.style("background-color", "#F5F5F5");
+  button.style("font-weight", "bold");
+  button.style("font-family", "sans-serif");
+  button.style("border", "none");
+  button.style("color", "#00008B");
+  button.style("border-radius", "16px");
   button.mousePressed(() => window.location.reload());
   noLoop();
   return;
