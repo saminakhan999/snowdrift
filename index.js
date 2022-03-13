@@ -105,3 +105,23 @@ function Cannon(x, y, w, h) {
   };
 }
 
+// Creates bullets 
+function Bullet(x, y, r, angle) {
+  this.x = x;
+  this.y = y;
+  this.r = r;
+  this.angle = angle;
+  this.draw = function () {
+    ellipse(this.x, this.y, this.r, this.r);
+  };
+  //updates the position
+  this.update = function () {
+    //xVelocity = velocity * cos(angle);
+    //yVelocity = velocity * sin(angle);
+    this.x += 4 * cos(angle);
+    this.y += 4 * sin(angle);
+  };
+  this.checkCollision = function () {
+    return circlerect(this, Player);
+  };
+}
