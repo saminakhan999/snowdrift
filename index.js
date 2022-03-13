@@ -420,4 +420,71 @@ var levelData = [
 ];
 
 
+// Building the next level based on the levelData above 
+
+function nextLevel() {
+  if (level > levelData.length) {
+    win();
+  }
+  Player.health = 150;
+  reset();
+  
+  var gridSize = levelData[level - 1][levelData[level - 1].length - 1];
+  for (var i = 0; i < levelData[level - 1].length - 1; i++) {
+    for (var j = 0; j < levelData[level - 1][i].length; j++) {
+      switch (levelData[level - 1][i].charAt(j)) {
+        case "G":
+          platforms.push(
+            new Platform(j * gridSize, i * gridSize, gridSize, gridSize)
+          );
+          break;
+        case "I":
+          ice.push(new Ice(j * gridSize, i * gridSize, gridSize, gridSize));
+          break;
+        case "S":
+          Player.x = j * gridSize + 0.5;
+          Player.y = i * gridSize + 0.5;
+          Player.w = gridSize * 0.9;
+          Player.h = gridSize * 0.9;
+          originalCoords = [Player.x, Player.y]; // Original coordinates of where player starts (respawn here)
+          break;
+        case "P":
+          Portal.x = j * gridSize + gridSize / 2;
+          Portal.y = i * gridSize + gridSize / 2;
+          Portal.r = gridSize / 2;
+          break;
+        case "T":
+          tramps.push(
+            new Tramp(
+              j * gridSize,
+              i * gridSize + gridSize * 0.8,
+              gridSize,
+              gridSize * 0.2
+            )
+          );
+          break;
+        case "C":
+          cannons.push(
+            new Cannon(
+              j * gridSize + gridSize / 2,
+              i * gridSize + gridSize / 2,
+              gridSize,
+              gridSize
+            )
+          );
+          break;
+        case "^":
+          spikes.push(
+            new Spike(j * gridSize, i * gridSize, gridSize, gridSize)
+          );
+          break;
+          default:
+        console.log("LET'S GOOOOO")
+      }
+    }
+  }
+}
+nextLevel();
+
+
 
