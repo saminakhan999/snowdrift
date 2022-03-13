@@ -373,5 +373,15 @@ function die() {
   Player.y = originalCoords[1];
 }
 
+function reset() {
+  Player.xSpeed = 0;
+  Player.ySpeed = 0;
+  platforms = [];
+  ice = [];
+  cannons = [];
+  bullets = [];
+  tramps = [];
+  spikes = [];
+}
 
 
