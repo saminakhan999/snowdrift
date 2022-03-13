@@ -186,3 +186,21 @@ function Spike(x, y, w, h) {
     );
   };
 }
+
+
+// Creates Portal 
+Portal.draw = function () {
+  colorMode(HSB, 170);
+  noStroke();
+  for (var i = 0; i < this.r; i += 2) {
+    fill(255, 0, 255);
+  }
+  colorMode(RGB);
+  ellipse(this.x, this.y, this.r * 2);    
+};
+
+// Helps Portal collide with player 
+Portal.checkCollision = function () {
+  return circlerect(this, Player);
+};
+
