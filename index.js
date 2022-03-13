@@ -150,3 +150,39 @@ function Tramp(x, y, w, h) {
     );
   };
 }
+
+
+// Creates Spikes 
+function Spike(x, y, w, h) {
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.h = h;
+  this.draw = function () {
+    fill("#A5F2F3");
+    noStroke();
+    triangle(
+      this.x + this.w / 2,
+      this.y,
+      this.x,
+      this.y + this.h,
+      this.x + this.w,
+      this.y + this.h
+    );
+  };
+  this.checkCollision = function () {
+    return polygonCollide(
+      [
+        { x: Player.x, y: Player.y },
+        { x: Player.x + Player.w, y: Player.y },
+        { x: Player.x + Player.w, y: Player.y + Player.h },
+        { x: Player.x, y: Player.y + Player.h },
+      ], 
+      [
+        { x: this.x + this.w / 2, y: this.y },
+        { x: this.x, y: this.y + this.h },
+        { x: this.x + this.w, y: this.y + this.h },
+      ]
+    );
+  };
+}
