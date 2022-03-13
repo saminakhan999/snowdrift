@@ -377,6 +377,7 @@ function die() {
   Portal.time = 0;
   Player.x = originalCoords[0];
   Player.y = originalCoords[1];
+  bullets = [];
 }
 
 function reset() {
