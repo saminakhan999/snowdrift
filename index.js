@@ -252,3 +252,17 @@ function polygonCollide(shape1, shape2) {
   }
   return true; 
 } 
+
+
+// Makes it possible for the square shapes to collide 
+function rectrect(x1, y1, w1, h1, x2, y2, w2, h2) {
+  x1 += w1 / 2;
+  y1 += h1 / 2;
+  x2 += w2 / 2;
+  y2 += h2 / 2;
+
+  return (
+    Math.abs(x1 - x2) <= w1 / 2 + w2 / 2 &&
+    Math.abs(y1 - y2) <= h1 / 2 + h2 / 2
+  );
+}
