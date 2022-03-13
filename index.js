@@ -73,3 +73,35 @@ Player.draw = function () {
 };
 
 
+// Create Cannon
+function Cannon(x, y, w, h) {
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.h = h;
+  this.angle;
+    //updates the angle
+  this.update = function () {
+    var dx = this.x - (Player.x + Player.w / 2);
+    var dy = this.y - (Player.y + Player.h / 2);
+    this.angle = atan2(dy, dx);
+  };
+  this.draw = function () {
+
+    rectMode(CENTER);
+    translate(this.x, this.y);
+    rotate(this.angle - PI / 2);
+    fill("#000001");
+    ellipse(0, this.h / 6, this.w / 2, this.h / 2);
+    rect(0, -this.h / 8, this.w / 3, this.h / 2);
+    rotate(-this.angle + PI / 2);
+    translate(-this.x, -this.y);
+    rectMode(CORNER);
+    this.shoot = function () {
+      if (frameCount % 120 === 0) {
+        bullets.push(new Bullet(this.x, this.y, this.w / 5, this.angle + PI));
+      }
+    };
+  };
+}
+
