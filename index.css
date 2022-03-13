@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Notable&family=Quicksand:wght@600&display=swap');
+
+.snow-container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  top: 0;
+  overflow: hidden;
+  z-index: -5;
+  pointer-events: none;
+  background-color: rgb(238, 238, 238);
+}
+
+.snow {
+  display: block;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  transform: translate3d(0, -100%, 0);
+  -webkit-animation: snow linear infinite;
+          animation: snow linear infinite;
+}
+.snow.foreground {
+  background-image: url("https://dl6rt3mwcjzxg.cloudfront.net/assets/snow/snow-large-075d267ecbc42e3564c8ed43516dd557.png");
+  -webkit-animation-duration: 15s;
+          animation-duration: 15s;
+}
+.snow.foreground.layered {
+  -webkit-animation-delay: 7.5s;
+          animation-delay: 7.5s;
+}
+.snow.middleground {
+  background-image: image-url("https://dl6rt3mwcjzxg.cloudfront.net/assets/snow/snow-medium-0b8a5e0732315b68e1f54185be7a1ad9.png");
+  -webkit-animation-duration: 20s;
+          animation-duration: 20s;
+}
+.snow.middleground.layered {
+  -webkit-animation-delay: 10s;
+          animation-delay: 10s;
+}
+.snow.background {
+  background-image: image-url("https://dl6rt3mwcjzxg.cloudfront.net/assets/snow/snow-small-1ecd03b1fce08c24e064ff8c0a72c519.png");
+  -webkit-animation-duration: 30s;
+          animation-duration: 30s;
+}
+.snow.background.layered {
+  -webkit-animation-delay: 15s;
+          animation-delay: 15s;
+}
+
+@-webkit-keyframes snow {
+  0% {
+    transform: translate3d(0, -100%, 0);
+  }
+  100% {
+    transform: translate3d(15%, 100%, 0);
+  }
+}
+
+@keyframes snow {
+  0% {
+    transform: translate3d(0, -100%, 0);
+  }
+  100% {
+    transform: translate3d(15%, 100%, 0);
+  }
+}
+
+footer {
+    width: 100vw;
+    position: absolute;
+    background-color:#5353dd;
+    padding: 20px;
+    display: block;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    bottom: 0px;
+    color: whitesmoke;
+    font-family: "Oswald";
+}
+
+h1 {
+  height: auto;
+  width: 600px;
+  text-align: center;
+  position: fixed;
+  top: 0px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 70px;
+  transform: skewY(-7deg);
+  letter-spacing: 4px;
+  word-spacing: -8px;
+  font-weight: bolder;
+  color: #5353dd;
+  text-shadow: -1px -1px 0 black, -2px -2px 0 black, -3px -3px 0 black, -4px -4px 0 black, -5px -5px 0 black, -6px -6px 0 black, -7px -7px 0 black;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
