@@ -291,3 +291,30 @@ function circlerect(circ, rect) {
   return dx * dx + dy * dy <= circ.r * circ.r;
 }
 
+
+
+
+// Creates ground blocks 
+function Platform(x, y, w, h) {
+
+  this.draw = function () {
+    noStroke();
+    fill("#fffafa");
+    rect(x, y, w, h);
+  };
+  this.checkCollision = function () {
+    return rectrect(
+      x,
+      y,
+      w,
+      h,
+      Player.x,
+      Player.y,
+      Player.w,
+      Player.h
+    );
+  };
+}
+
+
+
