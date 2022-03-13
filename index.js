@@ -318,3 +318,25 @@ function Platform(x, y, w, h) {
 
 
 
+// Creates ice blocks 
+function Ice(x, y, w, h) {
+  this.draw = function () {
+    noStroke();
+    fill("#A5F2F3");
+    rect(x, y, w, h);
+  };
+  this.checkCollision = function () {
+    return rectrect(
+      x,
+      y,
+      w,
+      h,
+      Player.x,
+      Player.y,
+      Player.w,
+      Player.h
+    );
+  };
+}
+
+
