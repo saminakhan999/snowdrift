@@ -49,7 +49,7 @@ Player.updateX = function () {
   this.x += this.xSpeed;
 };
 Player.updateY = function () {
-  if (this.ySpeed < 4 || keys[UP_ARROW] || keys[87]) {
+  if (this.ySpeed < 4 || keys[UP_ARROW] || keys[87] || keys[32]) {
     this.ySpeed -= gravity;
   } else {
     this.ySpeed -= gravity * 2;
@@ -399,31 +399,58 @@ C = Cannon
 ^ = Spike
 T = Trampoline (Tramp)
 I = Ice 
+@ = Monster
 */
 
 // Each array is a level 
 
 var levelData = [
+
+  
   // Level 1
-  [
-    "                                     GG    T       T ",
-    "                                     GG        C              P",
-    "                                   GGGG        G         GGGGGG",
-    "                                   GGGG                  GGGGGG",
-    "                                 GGGGGG   C  C           GGGGGG",
-    "                                 GGGGGG   G  G     T     GGGGGG",
-    "  S                   ^      T   GGGGGG^^^^^^^^^^^  ^^^^^GGGGGG",
-    "GGGGGGGGGGIIIIIIIIIIIIIIIGGGGGGGGGGGGGGIIIIIIIIIIIGGIIIIIGGGGGG",
-    30,
-  ],
+  ["  S                 P ",
+   "GGGGGGIIIIIIIIIIIGGGGG", 40],
   // Level 2
   [
     "  S                  ^         ^             ^    ^^        ^^       ^    P ",
     "GGGGGIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIGGGGGGG",
-    30,
+    40,
   ],
   // Level 3
-  ["  S     P", "GGGGGGGGGGG", 30],
+  [
+    "                                     GG    T       T ",
+    "                                     GG        C       T      P",
+    "                                   GGGG        G         GGGGGG",
+    "                                   GGGG                  GGGGGG",
+    "                                 GGGGGG   C  C           GGGGGG",
+    "                                 GGGGGG   G  G     T     GGGGGG",
+    "  S            ^      ^      T   GGGGGG^^^^^^^^^^^  ^^^^^GGGGGG",
+    "GGGGGGGGGGIIIIIIIIIIIIIIIGGGGGGGGGGGGGGIIIIIIIIIIIGGIIIIIGGGGGG",
+    40,
+  ],
+  // level 4
+  ["                                                           T    T    T        ",
+   "                                                      T    G    G    G      P ",
+   "                                                 T    G                  GGGGG",
+   "                                   T    C   T    G         ^               GGG",
+   "  S                              GGGGGGGG   G            GGGGGGGT             ",
+   "  G   G                          GGGGGGGG                GGGGGGG    T         ",
+   "^^^^^^^^^^C           ^       T  GGGGGGGG^^^^^^^^^^^^^^^^GGGGGGC        T     ",
+   "GGGGGGGGGGIIIIIIIIIIIIIIIGGGGGGGGGGGGGGGGIIIIIIIIIIIIIIIIGGGGGGGIIIIIIIIGGGGGG",
+   40,],
+   // Level 100
+  ["P  ", 
+  "G  ",
+  "  I",
+  "   ", 
+  "G  ",
+  "  G",
+  "   ", 
+  "G  ",
+  "  G",
+  "   ", 
+  "G S",
+  "GGG", 40],
 ];
 
 
@@ -523,7 +550,7 @@ function draw() {
   translate(-Player.x - Player.w / 2 + 400, -Player.y - Player.h / 2 + 250); // Positions game screen
 
   // These are the actual keyboard controls
-  if (keys[UP_ARROW] || keys[87]) {
+  if (keys[UP_ARROW] || keys[87] || keys[32]) {
     Player.jump();
   }
   if (keys[LEFT_ARROW] || keys[65]) {
@@ -569,7 +596,7 @@ function draw() {
         }
       }
       Player.ySpeed = 0;
-      Player.xSpeed = 20; // This makes you slide on ice
+      Player.xSpeed = 10; // This makes you slide on ice
     }
   }
 
@@ -620,7 +647,7 @@ function draw() {
     bullets[i].draw();
     if (bullets[i].checkCollision()) {
       bullets.splice(i, 1);
-      Player.health -= 50;
+      Player.health -=  50;
       break;
     }
     for (var j = 0; j < platforms.length; j++) {
