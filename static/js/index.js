@@ -4,30 +4,7 @@ function setup() {
   frameRate(60);
 }
 
-function addHighscore(score) {
-  const addscore = document.createElement("form");
-  addscore.id = "addscore";
 
-  const scorelabel = document.createElement("label");
-  scorelabel.textContent = "score";
-  addscore.appendChild(scorelabel);
-  const scoreinput = document.createElement("input");
-  scoreinput.type = "number";
-  scoreinput.id = "score";
-  scoreinput.value = score;
-  scoreinput.readOnly = true;
-  addscore.appendChild(scoreinput);
-
-  const submitscore = document.createElement("input");
-  submitscore.type = "submit";
-  submitscore.value = "Add highscore";
-  addscore.appendChild(submitscore);
-
-  const alldascores = document.getElementById("alldascores");
-  alldascores.appendChild(addscore);
-
-  addscore.addEventListener("submit", submitHighscore, { once: true });
-}
 
 var level = 1;
 var platforms = [];
@@ -578,7 +555,6 @@ var levelData = [
 function nextLevel() {
   if (level > levelData.length) {
     win();
-    addHighscore(Player.points);
   }
   Player.health = 200;
   backupMonsters = [];
