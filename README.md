@@ -1,6 +1,6 @@
 # Snow Drift - WIP
 
-Enjoy this 2D platform game created using p5.js! :snowflake:
+Enjoy this 2D platform game created using p5.js! :snowflake: [Try it out](https://snow-drift.netlify.app/)
 
 *** More levels coming soon ***
 
@@ -16,8 +16,5 @@ Enjoy this 2D platform game created using p5.js! :snowflake:
 
 - Open the client using either `http-server` (node) / `python -m http.server` / open the `index.html` file in your browser
 
-### Deployment
-
-- View the client live on [Netlify](https://snow-drift.netlify.app/)
 
 

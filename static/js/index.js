@@ -4,6 +4,31 @@ function setup() {
   frameRate(60);
 }
 
+function addHighscore(score) {
+  const addscore = document.createElement("form");
+  addscore.id = "addscore";
+
+  const scorelabel = document.createElement("label");
+  scorelabel.textContent = "score";
+  addscore.appendChild(scorelabel);
+  const scoreinput = document.createElement("input");
+  scoreinput.type = "number";
+  scoreinput.id = "score";
+  scoreinput.value = score;
+  scoreinput.readOnly = true;
+  addscore.appendChild(scoreinput);
+
+  const submitscore = document.createElement("input");
+  submitscore.type = "submit";
+  submitscore.value = "Add highscore";
+  addscore.appendChild(submitscore);
+
+  const alldascores = document.getElementById("alldascores");
+  alldascores.appendChild(addscore);
+
+  addscore.addEventListener("submit", submitHighscore, { once: true });
+}
+
 var level = 1;
 var platforms = [];
 var ice = [];
@@ -12,10 +37,13 @@ var bullets = [];
 var tramps = [];
 var spikes = [];
 var keys = [];
+var monsters = [];
+var coins = [];
 var gravity = 0.8;
 var offGround = 10;
 var timeSinceJump = 1000;
 var framesSinceStart;
+var backupMonsters;
 var Player = {
   x: 400,
   y: 400,
@@ -24,6 +52,7 @@ var Player = {
   ySpeed: 0,
   xSpeed: 0,
   health: 200,
+  points: 0,
 };
 var Portal = {
   x: 0,
@@ -55,7 +84,8 @@ Player.updateY = function () {
     this.ySpeed -= gravity * 2;
   }
   this.y -= this.ySpeed;
-  if ( // need this one because you fall forever without it
+  if (
+    // need this one because you fall forever without it
     this.y >
     levelData[level - 1].length *
       levelData[level - 1][levelData[level - 1].length - 1]
@@ -64,14 +94,13 @@ Player.updateY = function () {
   }
 };
 
-// Creates player 
+// Creates player
 Player.draw = function () {
   noStroke();
-  fill("#00008B");
+  fill("#000000");
   rect(this.x, this.y, this.w, this.h, this.w);
   fill(0);
 };
-
 
 // Create Cannon
 function Cannon(x, y, w, h) {
@@ -80,14 +109,13 @@ function Cannon(x, y, w, h) {
   this.w = w;
   this.h = h;
   this.angle;
-    //updates the angle
+  //updates the angle
   this.update = function () {
     var dx = this.x - (Player.x + Player.w / 2);
     var dy = this.y - (Player.y + Player.h / 2);
     this.angle = atan2(dy, dx);
   };
   this.draw = function () {
-
     rectMode(CENTER);
     translate(this.x, this.y);
     rotate(this.angle - PI / 2);
@@ -105,7 +133,7 @@ function Cannon(x, y, w, h) {
   };
 }
 
-// Creates bullets 
+// Creates bullets
 function Bullet(x, y, r, angle) {
   this.x = x;
   this.y = y;
@@ -126,15 +154,123 @@ function Bullet(x, y, r, angle) {
   };
 }
 
+// Creates Monster
 
-// Creates Trampoline 
+function Monster(x, y, w, h, xVel) {
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.h = h;
+  this.xVel = -2;
+  this.draw = function () {
+    if (
+      Math.abs(this.x - Player.x) < width + Player.w &&
+      Math.abs(this.y - Player.y) < height + Player.h
+    ) {
+      // draw the monster
+      fill(23, 130, 57);
+      noStroke();
+      rect(this.x, this.y, this.w, this.h, Math.abs(cos(frameCount / 60)) * 10);
+    }
+  };
+
+  //updates the angle
+  this.update = function () {
+    var dx = this.x + this.w / 2 - (Player.x + Player.w / 2);
+    var dy = this.y + this.h / 2 - (Player.y + Player.h / 2);
+    this.angle = atan2(dy, dx);
+    this.x += this.xVel;
+    for (var i = 0; i < platforms.length; i++) {
+      if (
+        rectrect(
+          this.x,
+          this.y,
+          this.w,
+          this.h,
+          platforms[i].x,
+          platforms[i].y,
+          platforms[i].w,
+          platforms[i].h
+        )
+      ) {
+        this.xVel = -this.xVel;
+        this.x += this.xVel;
+      }
+    }
+
+    if (this.checkCollision()) {
+      if (Player.ySpeed >= 0) {
+        Player.health -= 10;
+      } else if (Player.ySpeed < -3 && this.y - Player.y > Player.h / 2 - 5) {
+        Player.points += 1000;
+        this.dead = true; // the monster is "dead"
+        Player.ySpeed = 18; // make the player hop (slightly higher than a normal jump)
+      }
+    }
+  };
+  this.checkCollision = function () {
+    return rectrect(
+      this.x,
+      this.y,
+      this.w,
+      this.h,
+      Player.x,
+      Player.y,
+      Player.w,
+      Player.h
+    );
+  };
+}
+
+function Coin(x, y, w, h) {
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.h = h;
+  this.draw = function () {
+    {
+      // draw the coin
+      fill(255, 215, 0);
+      noStroke();
+      ellipse(
+        this.x,
+        this.y,
+        this.w / 2,
+        this.h / 2,
+        Math.abs(cos(frameCount / 60)) * 10
+      );
+    }
+  };
+
+  //updates the angle
+  this.update = function () {
+    if (this.checkCollision()) {
+      Player.points += 5000;
+      this.dead = true; // the coin is "dead"
+    }
+  };
+  this.checkCollision = function () {
+    return rectrect(
+      this.x,
+      this.y,
+      this.w,
+      this.h,
+      Player.x,
+      Player.y,
+      Player.w,
+      Player.h
+    );
+  };
+}
+
+// Creates Trampoline
 function Tramp(x, y, w, h) {
   this.x = x;
   this.y = y;
   this.w = w;
   this.h = h;
   this.draw = function () {
-    fill(0,0,1);
+    fill(0, 0, 1);
     rect(this.x, this.y, this.w, this.h);
   };
   this.checkCollision = function () {
@@ -151,8 +287,7 @@ function Tramp(x, y, w, h) {
   };
 }
 
-
-// Creates Spikes 
+// Creates Spikes
 function Spike(x, y, w, h) {
   this.x = x;
   this.y = y;
@@ -177,7 +312,7 @@ function Spike(x, y, w, h) {
         { x: Player.x + Player.w, y: Player.y },
         { x: Player.x + Player.w, y: Player.y + Player.h },
         { x: Player.x, y: Player.y + Player.h },
-      ], 
+      ],
       [
         { x: this.x + this.w / 2, y: this.y },
         { x: this.x, y: this.y + this.h },
@@ -187,8 +322,7 @@ function Spike(x, y, w, h) {
   };
 }
 
-
-// Creates Portal 
+// Creates Portal
 Portal.draw = function () {
   colorMode(HSB, 170);
   noStroke();
@@ -196,16 +330,15 @@ Portal.draw = function () {
     fill(255, 0, 255);
   }
   colorMode(RGB);
-  ellipse(this.x, this.y, this.r * 2);    
+  ellipse(this.x, this.y, this.r * 2);
 };
 
-// Helps Portal collide with player 
+// Helps Portal collide with player
 Portal.checkCollision = function () {
   return circlerect(this, Player);
 };
 
-
-// This function makes it possible for all shapes to collide 
+// This function makes it possible for all shapes to collide
 
 function polygonCollide(shape1, shape2) {
   function isBetween(c, a, b) {
@@ -250,11 +383,10 @@ function polygonCollide(shape1, shape2) {
       }
     }
   }
-  return true; 
-} 
+  return true;
+}
 
-
-// Makes it possible for the square shapes to collide 
+// Makes it possible for the square shapes to collide
 function rectrect(x1, y1, w1, h1, x2, y2, w2, h2) {
   x1 += w1 / 2;
   y1 += h1 / 2;
@@ -262,12 +394,11 @@ function rectrect(x1, y1, w1, h1, x2, y2, w2, h2) {
   y2 += h2 / 2;
 
   return (
-    Math.abs(x1 - x2) <= w1 / 2 + w2 / 2 &&
-    Math.abs(y1 - y2) <= h1 / 2 + h2 / 2
+    Math.abs(x1 - x2) <= w1 / 2 + w2 / 2 && Math.abs(y1 - y2) <= h1 / 2 + h2 / 2
   );
 }
 
-// Makes it possible for circle and squares to collide 
+// Makes it possible for circle and squares to collide
 function circlerect(circ, rect) {
   var distX = Math.abs(circ.x - rect.x - rect.w / 2);
   var distY = Math.abs(circ.y - rect.y - rect.h / 2);
@@ -291,34 +422,19 @@ function circlerect(circ, rect) {
   return dx * dx + dy * dy <= circ.r * circ.r;
 }
 
-
-
-
-// Creates ground blocks 
+// Creates ground blocks
 function Platform(x, y, w, h) {
-
   this.draw = function () {
     noStroke();
     fill("#fffafa");
     rect(x, y, w, h);
   };
   this.checkCollision = function () {
-    return rectrect(
-      x,
-      y,
-      w,
-      h,
-      Player.x,
-      Player.y,
-      Player.w,
-      Player.h
-    );
+    return rectrect(x, y, w, h, Player.x, Player.y, Player.w, Player.h);
   };
 }
 
-
-
-// Creates ice blocks 
+// Creates ice blocks
 function Ice(x, y, w, h) {
   this.draw = function () {
     noStroke();
@@ -326,16 +442,7 @@ function Ice(x, y, w, h) {
     rect(x, y, w, h);
   };
   this.checkCollision = function () {
-    return rectrect(
-      x,
-      y,
-      w,
-      h,
-      Player.x,
-      Player.y,
-      Player.w,
-      Player.h
-    );
+    return rectrect(x, y, w, h, Player.x, Player.y, Player.w, Player.h);
   };
 }
 
@@ -347,14 +454,13 @@ function keyReleased() {
   keys[keyCode] = false;
 }
 
-
 function win() {
   background("#1E90FF");
   textSize(width / 20);
   fill("#F5F5F5");
   textFont("Bebas Neue");
   text(
-    "OMG YOU BEAT ALL THE LEVELS!!!! \n [ INSERT CRAZY SNOW DRIFT FINAL LEVEL \n PLOT TWIST ]",
+    "OMG YOU BEAT ALL THE LEVELS!!!! \n [ INSERT CRAZY SNOWDRIFT FINAL LEVEL \n PLOT TWIST ]",
     width / 2,
     height / 2
   );
@@ -371,13 +477,17 @@ function win() {
   return;
 }
 
-
 function die() {
   Player.health = 200;
   Portal.time = 0;
   Player.x = originalCoords[0];
   Player.y = originalCoords[1];
   bullets = [];
+  monsters = [];
+  coins = [];
+  for (var i = 0; i < backupMonsters.length; i++) {
+    monsters.push(Object.assign({}, backupMonsters[i]));
+  }
 }
 
 function reset() {
@@ -389,80 +499,91 @@ function reset() {
   bullets = [];
   tramps = [];
   spikes = [];
+  monsters = [];
+  coins = [];
 }
 
 /*
-G = Ground Platform
-P = Portal
-S = Player Start Position
-C = Cannon
-^ = Spike
-T = Trampoline (Tramp)
-I = Ice 
-@ = Monster
-*/
+  G = Ground Platform
+  P = Portal
+  S = Player Start Position
+  C = Cannon
+  ^ = Spike
+  T = Trampoline (Tramp)
+  I = Ice 
+  @ = Monster
+  £ = Coin
+  */
 
-// Each array is a level 
+// Each array is a level
 
 var levelData = [
-
-  
   // Level 1
-  ["  S                 P ",
-   "GGGGGGIIIIIIIIIIIGGGGG", 40],
+  [
+    "                      ",
+    "  S    £   @     @ P ",
+    "GGGGGGIIIIIIIIIIIGGGGG",
+    40,
+  ],
   // Level 2
   [
-    "  S                  ^         ^             ^    ^^        ^^       ^    P ",
-    "GGGGGIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIGGGGGGG",
+    "  S              @   ^         ^    @    £   ^ @  ^^    @   ^^       ^     P ",
+    "GGGGGIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIGGGGGGG",
     40,
   ],
   // Level 3
   [
-    "                                     GG    T       T ",
+    "                                     GG    T   @   T ",
     "                                     GG        C       T      P",
-    "                                   GGGG        G         GGGGGG",
-    "                                   GGGG                  GGGGGG",
+    "             £                     GGGG        G      @  GGGGGG",
+    "                           @       GGGG                  GGGGGG",
     "                                 GGGGGG   C  C           GGGGGG",
     "                                 GGGGGG   G  G     T     GGGGGG",
-    "  S            ^      ^      T   GGGGGG^^^^^^^^^^^  ^^^^^GGGGGG",
+    "  S         @  ^      ^      T   GGGGGG^^^^^^^^^^^  ^^^^^GGGGGG",
     "GGGGGGGGGGIIIIIIIIIIIIIIIGGGGGGGGGGGGGGIIIIIIIIIIIGGIIIIIGGGGGG",
     40,
   ],
   // level 4
-  ["                                                           T    T    T        ",
-   "                                                      T    G    G    G      P ",
-   "                                                 T    G                  GGGGG",
-   "                                   T    C   T    G         ^               GGG",
-   "  S                              GGGGGGGG   G            GGGGGGGT             ",
-   "  G   G                          GGGGGGGG                GGGGGGG    T         ",
-   "^^^^^^^^^^C           ^       T  GGGGGGGG^^^^^^^^^^^^^^^^GGGGGGC        T     ",
-   "GGGGGGGGGGIIIIIIIIIIIIIIIGGGGGGGGGGGGGGGGIIIIIIIIIIIIIIIIGGGGGGGIIIIIIIIGGGGGG",
-   40,],
-   // Level 100
-  ["P  ", 
-  "G  ",
-  "  I",
-  "   ", 
-  "G  ",
-  "  G",
-  "   ", 
-  "G  ",
-  "  G",
-  "   ", 
-  "G S",
-  "GGG", 40],
+  [
+    "                                                           T    T    T        ",
+    "                                                      T    G    G    G      P ",
+    "                                                 T    G                  GGGGG",
+    "                  £                T    C   T    G         ^               GGG",
+    "  S                              GGGGGGGG   G            GGGGGGGT             ",
+    "  G   G                          GGGGGGGG         @      GGGGGGG    T         ",
+    "^^^^^^^^^^C           ^    @  T  GGGGGGGG^^^^^^^^^^^^^^^^GGGGGGC        T     ",
+    "GGGGGGGGGGIIIIIIIIIIIIIIIGGGGGGGGGGGGGGGGIIIIIIIIIIIIIIIIGGGGGGGIIIIIIIIGGGGGG",
+    40,
+  ],
+  // Level 100
+  [
+    "P £",
+    "G  ",
+    "  I",
+    "   ",
+    "G  ",
+    "  G",
+    "   ",
+    "G  ",
+    "  G",
+    "   ",
+    "G S",
+    "GGG",
+    40,
+  ],
 ];
 
-
-// Building the next level based on the levelData above 
+// Building the next level based on the levelData above
 
 function nextLevel() {
   if (level > levelData.length) {
     win();
+    addHighscore(Player.points);
   }
   Player.health = 200;
+  backupMonsters = [];
   reset();
-  
+
   var gridSize = levelData[level - 1][levelData[level - 1].length - 1];
   for (var i = 0; i < levelData[level - 1].length - 1; i++) {
     for (var j = 0; j < levelData[level - 1][i].length; j++) {
@@ -481,6 +602,34 @@ function nextLevel() {
           Player.w = gridSize * 0.9;
           Player.h = gridSize * 0.9;
           originalCoords = [Player.x, Player.y]; // Original coordinates of where player starts (respawn here)
+          break;
+        case "£":
+          coins.push(
+            new Coin(
+              j * gridSize + 0.5,
+              i * gridSize + 0.5,
+              gridSize - 1,
+              gridSize - 1
+            )
+          );
+          break;
+        case "@":
+          monsters.push(
+            new Monster(
+              j * gridSize + 0.5,
+              i * gridSize + 0.5,
+              gridSize - 1,
+              gridSize - 1 - 2
+            )
+          );
+          backupMonsters.push(
+            new Monster(
+              j * gridSize + 0.5,
+              i * gridSize + 0.5,
+              gridSize - 1,
+              gridSize - 1
+            )
+          );
           break;
         case "P":
           Portal.x = j * gridSize + gridSize / 2;
@@ -512,15 +661,12 @@ function nextLevel() {
             new Spike(j * gridSize, i * gridSize, gridSize, gridSize)
           );
           break;
-          default:
-        console.log("LET'S GOOOOO")
+        default:
       }
     }
   }
 }
 nextLevel();
-
-
 
 // If player walks into a platform block, it wont glitch at it
 Player.walkedInPlatform = function () {
@@ -538,12 +684,10 @@ Player.walkedInPlatform = function () {
   }
 };
 
-
-// Rendering the game 
+// Rendering the game
 
 function draw() {
-
-  // Actual game screen 
+  // Actual game screen
   push();
   scale(width / 800, height / 500);
   background("#1E90FF");
@@ -596,7 +740,7 @@ function draw() {
         }
       }
       Player.ySpeed = 0;
-      Player.xSpeed = 10; // This makes you slide on ice
+      Player.xSpeed = 13; // This makes you slide on ice
     }
   }
 
@@ -626,7 +770,7 @@ function draw() {
   // Render Spikes with a -50 damage
   for (i = 0; i < spikes.length; i++) {
     if (spikes[i].checkCollision()) {
-      Player.health -= 50;
+      Player.health -= 10;
       Player.ySpeed = 14;
       Player.y -= 0;
     }
@@ -640,14 +784,30 @@ function draw() {
     cannons[i].shoot();
   }
 
-  // Render moving bullets along with -50 damage 
+  for (i = monsters.length - 1; i > -1; i--) {
+    monsters[i].update();
+    monsters[i].draw();
+    if (monsters[i].dead) {
+      monsters.splice(i, 1);
+    }
+  }
+
+  for (i = coins.length - 1; i > -1; i--) {
+    coins[i].update();
+    coins[i].draw();
+    if (coins[i].dead) {
+      coins.splice(i, 1);
+    }
+  }
+
+  // Render moving bullets along with -50 damage
 
   for (i = bullets.length - 1; i > -1; i--) {
     bullets[i].update();
     bullets[i].draw();
     if (bullets[i].checkCollision()) {
       bullets.splice(i, 1);
-      Player.health -=  50;
+      Player.health -= 10;
       break;
     }
     for (var j = 0; j < platforms.length; j++) {
@@ -669,11 +829,15 @@ function draw() {
 
   // Level and Health display at top
   pop();
+
   fill(0);
   textSize(width / 23);
   fill(255, 255, 255);
   textFont("Quicksand");
   text("Health: " + round(Player.health), width - width / 8, height / 23);
+  fill(255, 255, 255);
+  textFont("Quicksand");
+  text("Points: " + round(Player.points), width - width / 2, height / 23);
   textAlign(CENTER);
   fill(255, 255, 255);
   textFont("Quicksand");
@@ -702,7 +866,3 @@ function draw() {
   fill(255, 255, 255, 0 + Portal.time * 2);
   rect(0, 0, width, height);
 }
-
-
-
-
